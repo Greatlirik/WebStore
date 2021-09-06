@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:12.1-alpine
+    environment:
+      POSTGRES_USER: webstore
+      POSTGRES_PASSWORD: webstore
+      POSTGRES_DB: webstore
+    restart: on-failure
+    ports:
+      - 5432:5432
+    networks:
+      - internal
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+
+networks:
+  internal:
+    driver: bridge

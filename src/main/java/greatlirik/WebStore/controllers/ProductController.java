@@ -75,7 +75,7 @@ public class ProductController {
     }
 
     @PostMapping("/products/{id}")
-    public String buyProduct(@PathVariable("id") Integer id, Map<String, Object> model) {
+    public String buyProduct(@PathVariable("id") Integer id) {
         Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .map(Authentication::getPrincipal)
                 .filter(auth -> auth instanceof DefaultUserDetailsService.SimpleUserDetails)
@@ -88,12 +88,13 @@ public class ProductController {
                                 .findById(id)
                                 .map(productEntity -> {
                                     if (account.getWallet() < productEntity.getPrice()) {
-                                        model.put("message", "!Not enough money!");
+//                                        model.put("message", "!Not enough money!");
+
                                     } else {
                                         productEntity.setQuantity(productEntity.getQuantity() - 1);
                                         account.getProducts().add(productEntity);
                                         account.setWallet(account.getWallet() - productEntity.getPrice());
-                                        model.put("message", "!Product purchased!");
+//                                        model.put("message", "!Product purchased!");
                                         accountRepository.save(account);
                                     }
 
@@ -103,7 +104,7 @@ public class ProductController {
                         )
                 )
                 .ifPresent(productRepository::save);
-        return "products/{id}";
+        return "redirect:/store";
     }
 
 }
